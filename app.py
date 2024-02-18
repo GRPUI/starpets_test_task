@@ -1,3 +1,4 @@
+# Импортируем библиотеки
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,16 +7,19 @@ import string
 
 from weather import fetch_weather
 
+# Создаем приложение
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
 
+# Создаем модель для пользователей
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), nullable=False)
     balance = db.Column(db.Float, nullable=False)
 
+    # Методы для работы с пользователями
     @classmethod
     def get_user(cls, user_id):
         return cls.query.get(user_id)
@@ -57,6 +61,7 @@ class Users(db.Model):
         return None
 
 
+# Создаем таблицу в базе данных, которая соответствует модели и создаётся при запуске приложения
 with app.app_context():
     db.drop_all()
     db.create_all()
@@ -67,13 +72,14 @@ with app.app_context():
         )
 
 
+# Создаем маршрут для приветствия
 @app.route('/')
 def hello_world():
     return 'Привет, STARPETS! Думаю, что напишу то же на FastAPI, но намного лучше :)'
 
 
-# route для обновления баланса пользователя
-# /update/?userId=id&city=cityName
+# маршрут для обновления баланса пользователя
+# Пример запроса: http://127.0.0.1:5000/update/?userId=1&city=moscow
 @app.route("/update/")
 def update():
     try:
@@ -90,5 +96,6 @@ def update():
     return {'id': user.id, 'username': user.username, 'balance': user.balance}
 
 
+# точка входа в приложение
 if __name__ == '__main__':
     app.run()

@@ -1,10 +1,13 @@
+# импортируем библиотеки
 import requests
 import dotenv
 import os
 
+# загружаем переменные окружения
 dotenv.load_dotenv()
 
 
+# функция для получения погоды
 def fetch_weather(city):
     key = os.getenv('API_KEY')
     url = f'https://api.weatherapi.com/v1/current.json?key={key}&q={city}&aqi=no'
